@@ -3,7 +3,7 @@ name: Build Android APK
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch: # يتيح لك تشغيل البناء يدوياً أيضاً
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,16 +18,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    # هذه الخطوة ستقوم بتثبيت الـ Gradle تلقائياً لأن ملف gradlew مفقود لديك
+    # إعداد أداة بناء الـ Gradle وتوليد ملف التشغيل تلقائياً
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
+      with:
+        generate-submit-arguments: true
 
-    # أمر بناء التطبيق بدون الحاجة لـ gradlew
+    # بناء التطبيق مع إظهار تفاصيل الخطأ لو حدثت
     - name: Build with Gradle
-      run: gradle assembleDebug
+      run: gradle assembleDebug --stacktrace --info
 
-    # رفع ملف الـ APK لتتمكن من تحميله
+    # رفع ملف الـ APK عند النجاح
     - name: Upload APK
+      if: success()
       uses: actions/upload-artifact@v4
       with:
         name: app-debug-apk
