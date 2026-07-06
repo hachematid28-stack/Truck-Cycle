@@ -1,0 +1,6 @@
+{
+  "name": "Truck Cycle",
+  "description": "Offline-first heavy truck tracking app for phosphate transportation cycles, waiting time, and breakdown logging.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
