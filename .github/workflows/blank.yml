@@ -18,17 +18,23 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    # إعداد أداة بناء الـ Gradle وتوليد ملف التشغيل تلقائياً
+    # 1. تثبيت إصدار مستقر من Gradle متوافق مع أندرويد
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
-      with:
-        generate-submit-arguments: true
 
-    # بناء التطبيق مع إظهار تفاصيل الخطأ لو حدثت
+    # 2. توليد ملف الـ gradlew المفقود في مشروعك لتجنب أي تعارض في الإصدارات
+    - name: Generate Gradle Wrapper
+      run: gradle wrapper --gradle-version 8.4
+
+    # 3. منح صلاحية التشغيل للملف الذي تم توليده
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # 4. بناء التطبيق باستخدام الـ wrapper الصحيح
     - name: Build with Gradle
-      run: gradle assembleDebug --stacktrace --info
+      run: ./gradlew assembleDebug --stacktrace
 
-    # رفع ملف الـ APK عند النجاح
+    # 5. رفع ملف الـ APK عند النجاح
     - name: Upload APK
       if: success()
       uses: actions/upload-artifact@v4
